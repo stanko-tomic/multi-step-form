@@ -2,26 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply bg-neutral-magnolia;
+}
+
+h1 {
+  @apply text-primary-marineBlue font-bold text-3xl;
+}
+
+span.stepActive {
+  @apply bg-primary-lightBlue text-primary-marineBlue border-primary-lightBlue;
+}
+
+button.primary {
+  @apply px-[26px] py-4 bg-primary-marineBlue font-semibold text-white rounded-lg capitalize text-sm;
+}
+
+button.primary:hover {
+  @apply bg-primary-marineBlue bg-opacity-90;
+}
+
+button.secondary:hover {
+  @apply text-primary-marineBlue;
+}
+
+input.default {
+  @apply outline-1 outline outline-neutral-coolGray w-full rounded-lg text-primary-marineBlue font-semibold px-4 py-[14px];
+}
+
+input.default:focus {
+  @apply outline-1 outline outline-primary-marineBlue;
+}
+
+input.default::placeholder {
+  @apply font-normal;
+}
+
+label.default {
+  @apply text-primary-marineBlue text-[15px];
+}
+
+.addon-checkbox {
+  @apply accent-primary-purplishBlue w-5 h-5 rounded-lg overflow-hidden;
 }
