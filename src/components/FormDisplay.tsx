@@ -24,7 +24,8 @@ const FormDisplay = () => {
     total,
     planPrice,
     setCurrentStep,
-    error,
+    finishedForm,
+    clickedNextButton,
   } = useStateContext();
 
   const [form, setForm] = useState<Form | null>(null);
@@ -60,13 +61,17 @@ const FormDisplay = () => {
   }, [currentStep]);
 
   return (
-    <div className="pt-0 lg:pt-11">
-      <h1>{form?.data?.heading}</h1>
-      <h2 className="mt-3 text-neutral-coolGray text-base">
-        {form?.data?.subHeading}
-      </h2>
+    <div className={`${finishedForm ? "pt-0 h-full" : "lg:pt-11"}`}>
+      {!finishedForm && (
+        <>
+          <h1>{form?.data?.heading}</h1>
+          <h2 className="mt-3 text-neutral-coolGray text-base">
+            {form?.data?.subHeading}
+          </h2>
+        </>
+      )}
 
-      <div className="mt-6 lg:mt-10 flex flex-col gap-4">
+      <div className={`mt-6 flex flex-col gap-4 h-full ${finishedForm ? "mt-0" : "lg:mt-10"}`}>
         {/* Normal input case */}
         {form?.data?.input?.map((input) => {
           return (
@@ -75,16 +80,18 @@ const FormDisplay = () => {
                 <label className="default text-sm" htmlFor={input.name}>
                   {input.name}
                 </label>
-                {!userData[input.name as keyof FormData] && (
-                  <p className="font-semibold text-primary-strawberryRed text-sm">
-                    This field is required
-                  </p>
-                )}
+                {!userData[input.name as keyof FormData] &&
+                  clickedNextButton && (
+                    <p className="font-semibold text-primary-strawberryRed text-sm">
+                      This field is required
+                    </p>
+                  )}
               </div>
               <input
-                type="text"
+                type={input.type}
                 name={input.name}
                 id={input.name}
+                required
                 className="default mt-2"
                 onChange={(e) => handleInputChange(input.name, e.target.value)}
                 value={userData[input.name as keyof FormData]}
@@ -217,68 +224,80 @@ const FormDisplay = () => {
           </div>
         )}
 
-        {form?.data.summary && (
-          <div>
-            <div className="bg-neutral-magnolia px-6 py-5 rounded-lg">
-              <div className="flex flex-row justify-between items-center">
-                <div className="flex flex-col text-primary-marineBlue font-semibold">
-                  <p>{`${activePlan} (${yearly ? "Yearly" : "Monthly"})`}</p>
-                  <button
-                    onClick={() => setCurrentStep(1)}
-                    className="text-neutral-coolGray underline text-left font-normal text-sm hover:text-primary-purplishBlue"
-                  >
-                    Change
-                  </button>
+        {finishedForm ? (
+          <div className="h-full flex items-center justify-center flex-col">
+            <img className="lg:mb-10 mb-4 w-14 lg:w-auto" src="/images/icon-thank-you.svg" alt="Checkmark" />
+            <h1 className="mb-4 text-2xl lg:text-3xl">Thank you!</h1>
+            <p className="text-neutral-coolGray text-center">Thanks for confirming your subscription! We hope you have fun using our platform. If you ever need support, please feel free to email us at support@loremgaming.com.</p>
+          </div>
+        ) : (
+          <>
+            {form?.data.summary && (
+              <div>
+                <div className="bg-neutral-magnolia px-6 py-5 rounded-lg">
+                  <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-col text-primary-marineBlue font-semibold">
+                      <p>{`${activePlan} (${
+                        yearly ? "Yearly" : "Monthly"
+                      })`}</p>
+                      <button
+                        onClick={() => setCurrentStep(1)}
+                        className="text-neutral-coolGray underline text-left font-normal text-sm hover:text-primary-purplishBlue"
+                      >
+                        Change
+                      </button>
+                    </div>
+
+                    <p className="text-primary-marineBlue font-semibold">{`$${planPrice}/${
+                      yearly ? "yr" : "mo"
+                    }`}</p>
+                  </div>
+
+                  {addons.length > 0 && (
+                    <span className="h-[1px] bg-neutral-lightGray mb-5 w-full block mt-6"></span>
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    {addons.map((addon) => {
+                      return (
+                        <div
+                          className="flex flex-row justify-between"
+                          key={`${addon.name}-summary`}
+                        >
+                          <div>
+                            <p className="text-neutral-coolGray text-sm">
+                              {addon.name}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-primary-marineBlue text-xs">
+                              +{yearly ? addon.yearlyPrice : addon.monthlyPrice}
+                              /{`${yearly ? "yr" : "mo"}`}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
-                <p className="text-primary-marineBlue font-semibold">{`$${planPrice}/${
-                  yearly ? "yr" : "mo"
-                }`}</p>
+                <div className="flex flex-row px-6 w-full justify-between items-center mt-6">
+                  <div>
+                    <p className="text-neutral-coolGray text-sm">
+                      Total (per {yearly ? "year" : "month"})
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="font-bold text-primary-purplishBlue">
+                      +${total}/{yearly ? "yr" : "mo"}
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              {addons.length > 0 && (
-                <span className="h-[1px] bg-neutral-lightGray mb-5 w-full block mt-6"></span>
-              )}
-
-              <div className="flex flex-col gap-2">
-                {addons.map((addon) => {
-                  return (
-                    <div
-                      className="flex flex-row justify-between"
-                      key={`${addon.name}-summary`}
-                    >
-                      <div>
-                        <p className="text-neutral-coolGray text-sm">
-                          {addon.name}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-primary-marineBlue text-xs">
-                          +{yearly ? addon.yearlyPrice : addon.monthlyPrice}/
-                          {`${yearly ? "yr" : "mo"}`}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex flex-row px-6 w-full justify-between items-center mt-6">
-              <div>
-                <p className="text-neutral-coolGray text-sm">
-                  Total (per {yearly ? "year" : "month"})
-                </p>
-              </div>
-
-              <div>
-                <p className="font-bold text-primary-purplishBlue">
-                  +${total}/{yearly ? "yr" : "mo"}
-                </p>
-              </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -6,6 +6,7 @@ interface Form {
     input?: {
       name: string;
       placeholder: string;
+      type: string;
     }[];
     plans?: {
       name: string;

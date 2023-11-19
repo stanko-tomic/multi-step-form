@@ -6,9 +6,16 @@ import { useStateContext } from "@/context/useStateContext";
 import { getNavigation } from "@/lib/formData";
 
 const FormHandler = () => {
-  const { currentStep, increaseStep, decreaseStep } = useStateContext();
+  const { currentStep, increaseStep, decreaseStep,error,setFinishedForm,finishedForm } = useStateContext();
 
   const [navigationItems, setNavigationItems] = useState<string[]>([]);
+
+  const handleIncrease = () => {
+    if (currentStep == 3) {
+      setFinishedForm(true)
+    }
+    increaseStep();
+  }
 
   useEffect(() => {
     const data = getNavigation(currentStep);
@@ -26,7 +33,7 @@ const FormHandler = () => {
           <img
             src="images/bg-sidebar-mobile.svg"
             className="w-full"
-            alt="IfItDoesntMatchAnyMedia"
+            alt="Sidebar design"
           />
         </picture>
 
@@ -62,10 +69,10 @@ const FormHandler = () => {
         </div>
       </aside>
       <div className="relative w-full lg:max-w-[450px] pb-10 lg:pb-0">
-        <section className="lg:max-w-[450px] lg:w-full shadow-[0px_0px_30px_10px] shadow-[#00000011] lg:shadow-none bg-white py-[35px] px-6 rounded-xl mx-4 -translate-y-[74px] lg:py-0 lg:rounded-none lg:mx-0 lg:static lg:-translate-y-0 lg:px-0">
+        <section className={`lg:max-w-[450px] lg:w-full shadow-[0px_0px_30px_10px] shadow-[#00000011] lg:shadow-none bg-white py-[35px] px-6 rounded-xl mx-4 -translate-y-[74px] lg:py-0 lg:rounded-none lg:mx-0 lg:static lg:-translate-y-0 lg:px-0 ${finishedForm && "h-full py-20 lg:py-0"}`}>
           <FormDisplay />
         </section>
-
+{!finishedForm && (
         <footer
           className={`${
             currentStep >= 1 ? "justify-between" : "justify-end"
@@ -79,10 +86,10 @@ const FormHandler = () => {
               Go Back
             </button>
           )}
-          <button onClick={increaseStep} className="primary">
+          <button disabled={error} onClick={handleIncrease} className="primary">
             Next step
           </button>
-        </footer>
+        </footer>)}
       </div>
     </div>
   );

@@ -9,14 +9,17 @@ const forms = [
         {
           name: "Name",
           placeholder: "e.g. Stephen King",
+          type: "text"
         },
         {
           name: "Email Address",
           placeholder: "e.g. stephenking@lorem.com",
+          type: "email"
         },
         {
           name: "Phone Number",
           placeholder: "e.g. +1 234 567 890",
+          type: "tel"
         },
       ],
     },

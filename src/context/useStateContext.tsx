@@ -14,6 +14,7 @@ interface ContextProps {
   planPrice: number;
   yearly: boolean;
   error: boolean;
+  clickedNextButton: boolean;
   increaseStep: () => void;
   decreaseStep: () => void;
   total: number;
@@ -24,11 +25,13 @@ interface ContextProps {
     "Phone Number": string;
   };
   activePlan: string;
+  finishedForm: boolean;
   setUserData: React.Dispatch<React.SetStateAction<UserData>>;
   setActivePlan: React.Dispatch<React.SetStateAction<string>>;
   setAddons: React.Dispatch<React.SetStateAction<Addon[]>>;
   setYearly: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  setFinishedForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Context = createContext<ContextProps>({
@@ -39,14 +42,17 @@ const Context = createContext<ContextProps>({
   userData: { Name: "", "Email Address": "", "Phone Number": "" },
   activePlan: "Arcade",
   addons: [],
+  total: 0,
+  clickedNextButton: false,
+  finishedForm: false,
   setAddons: () => {},
   increaseStep: () => {},
   decreaseStep: () => {},
   setUserData: () => {},
   setActivePlan: () => {},
-  total: 0,
   setYearly: () => {},
   setCurrentStep: () => {},
+  setFinishedForm: () => {},
 });
 
 interface StateContextProps {
@@ -66,6 +72,8 @@ export const StateContext = ({ children }: StateContextProps) => {
   const [error, setError] = useState(false);
   const [total, setTotal] = useState(0);
   const [planPrice, setPlanPrice] = useState(0);
+  const [clickedNextButton, setClickedNextButton] = useState(false);
+  const [finishedForm, setFinishedForm] = useState(false);
 
   const formCount = getFormCount();
 
@@ -76,10 +84,13 @@ export const StateContext = ({ children }: StateContextProps) => {
       userData["Phone Number"]
     ) {
       setError(false);
+    } else {
+      setError(true)
     }
   }, [userData]);
 
   const increaseStep = () => {
+    setClickedNextButton(true)
     if (
       !userData["Email Address"] ||
       !userData.Name ||
@@ -136,6 +147,9 @@ export const StateContext = ({ children }: StateContextProps) => {
         setYearly,
         total,
         planPrice,
+        clickedNextButton,
+        finishedForm,
+        setFinishedForm
       }}
     >
       {children}

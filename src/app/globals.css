@@ -18,6 +18,14 @@ button.primary {
   @apply px-[26px] py-4 bg-primary-marineBlue font-semibold text-white rounded-lg capitalize text-sm;
 }
 
+button.primary:disabled {
+  @apply bg-primary-marineBlue
+}
+
+button.primary:disabled:hover {
+  @apply bg-primary-marineBlue
+}
+
 button.primary:hover {
   @apply bg-primary-marineBlue bg-opacity-90;
 }
