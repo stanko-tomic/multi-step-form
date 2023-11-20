@@ -32,6 +32,7 @@ interface ContextProps {
   setYearly: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   setFinishedForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setClickedNextButton: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Context = createContext<ContextProps>({
@@ -47,6 +48,7 @@ const Context = createContext<ContextProps>({
   finishedForm: false,
   setAddons: () => {},
   increaseStep: () => {},
+  setClickedNextButton: () => {},
   decreaseStep: () => {},
   setUserData: () => {},
   setActivePlan: () => {},
@@ -85,16 +87,22 @@ export const StateContext = ({ children }: StateContextProps) => {
     ) {
       setError(false);
     } else {
-      setError(true)
+      setError(true);
     }
   }, [userData]);
 
+  const isValidEmail = (email: string): boolean => {
+    // Use a regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const increaseStep = () => {
-    setClickedNextButton(true)
     if (
       !userData["Email Address"] ||
       !userData.Name ||
-      !userData["Phone Number"]
+      !userData["Phone Number"] ||
+      !isValidEmail(userData["Email Address"])
     ) {
       setError(true);
     } else if (currentStep + 1 < formCount && !error) {
@@ -148,8 +156,9 @@ export const StateContext = ({ children }: StateContextProps) => {
         total,
         planPrice,
         clickedNextButton,
+        setClickedNextButton,
         finishedForm,
-        setFinishedForm
+        setFinishedForm,
       }}
     >
       {children}

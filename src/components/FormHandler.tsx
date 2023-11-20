@@ -6,16 +6,25 @@ import { useStateContext } from "@/context/useStateContext";
 import { getNavigation } from "@/lib/formData";
 
 const FormHandler = () => {
-  const { currentStep, increaseStep, decreaseStep,error,setFinishedForm,finishedForm } = useStateContext();
+  const {
+    currentStep,
+    increaseStep,
+    decreaseStep,
+    error,
+    setFinishedForm,
+    finishedForm,
+    setClickedNextButton,
+    clickedNextButton,
+  } = useStateContext();
 
   const [navigationItems, setNavigationItems] = useState<string[]>([]);
 
   const handleIncrease = () => {
     if (currentStep == 3) {
-      setFinishedForm(true)
+      setFinishedForm(true);
     }
     increaseStep();
-  }
+  };
 
   useEffect(() => {
     const data = getNavigation(currentStep);
@@ -68,28 +77,43 @@ const FormHandler = () => {
           </div>
         </div>
       </aside>
-      <div className="relative w-full lg:max-w-[450px] pb-10 lg:pb-0">
-        <section className={`lg:max-w-[450px] lg:w-full shadow-[0px_0px_30px_10px] shadow-[#00000011] lg:shadow-none bg-white py-[35px] px-6 rounded-xl mx-4 -translate-y-[74px] lg:py-0 lg:rounded-none lg:mx-0 lg:static lg:-translate-y-0 lg:px-0 ${finishedForm && "h-full py-20 lg:py-0"}`}>
+      <div
+        className={`relative w-full lg:max-w-[450px] ${
+          finishedForm ? "pb-0" : "pb-10"
+        } lg:pb-0`}
+      >
+        <section
+          className={`lg:max-w-[450px] lg:w-full shadow-[0px_0px_30px_10px] shadow-[#00000011] lg:shadow-none bg-white py-[35px] px-6 rounded-xl mx-4 -translate-y-[74px] lg:py-0 lg:rounded-none lg:mx-0 lg:static lg:-translate-y-0 lg:px-0 ${
+            finishedForm && "h-full py-20 lg:py-0"
+          }`}
+        >
           <FormDisplay />
         </section>
-{!finishedForm && (
-        <footer
-          className={`${
-            currentStep >= 1 ? "justify-between" : "justify-end"
-          } lg:w-full lg:absolute fixed bottom-0 left-0 right-0 flex lg:shadow-none bg-white p-4 lg:p-0 shadow-[0px_0px_20px_10px] shadow-[rgba(0,0,0,0.05)]`}
-        >
-          {currentStep > 0 && (
-            <button
-              onClick={decreaseStep}
-              className="secondary text-neutral-coolGray font-medium text-base"
-            >
-              Go Back
-            </button>
-          )}
-          <button disabled={error} onClick={handleIncrease} className="primary">
-            Next step
-          </button>
-        </footer>)}
+        {!finishedForm && (
+          <footer
+            className={`${
+              currentStep >= 1 ? "justify-between" : "justify-end"
+            } lg:w-full lg:absolute fixed bottom-0 left-0 right-0 flex lg:shadow-none bg-white p-4 lg:p-0 shadow-[0px_0px_20px_10px] shadow-[rgba(0,0,0,0.05)]`}
+          >
+            {currentStep > 0 && (
+              <button
+                onClick={decreaseStep}
+                className="secondary text-neutral-coolGray font-medium text-base"
+              >
+                Go Back
+              </button>
+            )}
+            <span onClick={() => setClickedNextButton(true)} className="z-50">
+              <button
+                disabled={error && clickedNextButton}
+                onClick={handleIncrease}
+                className="primary"
+              >
+                Next step
+              </button>
+            </span>
+          </footer>
+        )}
       </div>
     </div>
   );

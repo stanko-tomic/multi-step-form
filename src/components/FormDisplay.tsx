@@ -60,8 +60,20 @@ const FormDisplay = () => {
     setForm(data);
   }, [currentStep]);
 
+  const isValidEmail = (email: string): boolean => {
+    // Use a regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   return (
-    <div className={`${finishedForm ? "pt-0 h-full" : "lg:pt-11"}`}>
+    <div
+      className={`${
+        finishedForm
+          ? "pt-0 lg:absolute lg:top-1/2 lg:-translate-y-1/2"
+          : "lg:pt-11"
+      }`}
+    >
       {!finishedForm && (
         <>
           <h1>{form?.data?.heading}</h1>
@@ -71,7 +83,11 @@ const FormDisplay = () => {
         </>
       )}
 
-      <div className={`mt-6 flex flex-col gap-4 h-full ${finishedForm ? "mt-0" : "lg:mt-10"}`}>
+      <div
+        className={`flex flex-col gap-4 h-full ${
+          finishedForm ? "mt-0" : "lg:mt-10 mt-6 "
+        }`}
+      >
         {/* Normal input case */}
         {form?.data?.input?.map((input) => {
           return (
@@ -84,6 +100,13 @@ const FormDisplay = () => {
                   clickedNextButton && (
                     <p className="font-semibold text-primary-strawberryRed text-sm">
                       This field is required
+                    </p>
+                  )}
+                {input.name === "Email Address" &&
+                  userData[input.name as keyof FormData] &&
+                  !isValidEmail(userData[input.name as keyof FormData]) && (
+                    <p className="font-semibold text-primary-strawberryRed text-sm">
+                      Invalid email address
                     </p>
                   )}
               </div>
@@ -194,6 +217,7 @@ const FormDisplay = () => {
                     <input
                       type="checkbox"
                       className="addon-checkbox"
+                      onChange={() => {}}
                       checked={addons.some(() =>
                         addons.some(
                           (selectedAddon) => selectedAddon.name === addon.name
@@ -226,9 +250,17 @@ const FormDisplay = () => {
 
         {finishedForm ? (
           <div className="h-full flex items-center justify-center flex-col">
-            <img className="lg:mb-10 mb-4 w-14 lg:w-auto" src="/images/icon-thank-you.svg" alt="Checkmark" />
+            <img
+              className="lg:mb-9 mb-4 w-14 lg:w-auto"
+              src="/images/icon-thank-you.svg"
+              alt="Checkmark"
+            />
             <h1 className="mb-4 text-2xl lg:text-3xl">Thank you!</h1>
-            <p className="text-neutral-coolGray text-center">Thanks for confirming your subscription! We hope you have fun using our platform. If you ever need support, please feel free to email us at support@loremgaming.com.</p>
+            <p className="text-neutral-coolGray text-center">
+              Thanks for confirming your subscription! We hope you have fun
+              using our platform. If you ever need support, please feel free to
+              email us at support@loremgaming.com.
+            </p>
           </div>
         ) : (
           <>
