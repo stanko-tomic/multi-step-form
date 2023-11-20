@@ -93,7 +93,10 @@ const FormDisplay = () => {
           return (
             <div key={input.name}>
               <div className="flex flex-row w-full justify-between">
-                <label className="default text-sm" htmlFor={input.name}>
+                <label
+                  className="default text-sm"
+                  htmlFor={input.name.replace(/\s/g, "-")}
+                >
                   {input.name}
                 </label>
                 {!userData[input.name as keyof FormData] &&
@@ -112,8 +115,8 @@ const FormDisplay = () => {
               </div>
               <input
                 type={input.type}
-                name={input.name}
-                id={input.name}
+                name={input.name.replace(/\s/g, "-")}
+                id={input.name.replace(/\s/g, "-")}
                 required
                 className="default mt-2"
                 onChange={(e) => handleInputChange(input.name, e.target.value)}
